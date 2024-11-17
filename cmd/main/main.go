@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"quilink/internal/handlers"
+	m "quilink/internal/models"
 	"quilink/internal/repository"
 
 	"github.com/gin-gonic/gin"
@@ -32,6 +33,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("error connecting to database: %v", err)
 	}
+
+	// auto migrate
+	db.AutoMigrate(&m.User{}, &m.Blog{}, &m.Link{}, &m.Profile{})
 
 	// handlers
 	blogHandler := handlers.NewBlogHandler()
