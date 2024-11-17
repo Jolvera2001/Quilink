@@ -2,9 +2,20 @@ FROM golang:1.23-alpine AS builder
 
 WORKDIR /app
 
-COPY cmd ./cmd/
-COPY internal/ ./internal/
+COPY go.mod go.sum ./
+RUN go mod download
 
-RUN go build -o main ./cmd/main/main.go
+COPY . .
 
-CMD [ "main.exe" ]
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux go build -o main ./cmd/main/main.go
+
+# Final stage
+FROM alpine:latest
+
+WORKDIR /app
+
+# Copy the binary from builder
+COPY --from=builder /app/main .
+
+CMD ["./main"]

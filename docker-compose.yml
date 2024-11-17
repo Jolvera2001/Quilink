@@ -1,1 +1,33 @@
 services:
+  quilink:
+    build: .
+    container_name: quilink_app
+    environment:
+      - PORT=${PORT}
+      - GIN_MODE=${GIN_MODE}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - quilink-network
+  db:
+    image: postgres:15-alpine
+    container_name: quilink_db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - quilink-network
+
+volumes:
+  postgres_data:
+
+networks:
+  quilink-network:
+    driver: bridge
