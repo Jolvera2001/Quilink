@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"quilink/internal/handlers"
+	"quilink/internal/repository"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -26,6 +28,10 @@ func main() {
 	}
 
 	// database
+	db, err := repository.ConnectToDB()
+	if err != nil {
+		log.Fatalf("error connecting to database: %v", err)
+	}
 
 	// handlers
 	blogHandler := handlers.NewBlogHandler()
