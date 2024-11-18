@@ -14,9 +14,9 @@ type Blog struct {
 }
 
 type BlogDto struct {
-	Title     string
-	Content   string
-	Slug      string
-	Published bool
-	UserId    uuid.UUID
+	Title     string    `json:"title"`
+	Content   string    `json:"content"`
+	Slug      string    `json:"slug"`
+	Published bool      `json:"published"`
+	UserId    uuid.UUID `json:"user_id"`
 }

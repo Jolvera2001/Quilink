@@ -1,0 +1,117 @@
+package blogComponent
+
+import (
+	"fmt"
+	"log"
+	m "quilink/internal/models"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
+
+type BlogService struct {
+	db gorm.DB
+}
+
+func NewBlogService(db gorm.DB) *BlogService {
+	return &BlogService{
+		db: db,
+	}
+}
+
+func (s *BlogService) GetBlog(id uuid.UUID) (m.Blog, error) {
+	var blog m.Blog
+
+	if err := s.db.First(&blog, "id = ?", id).Error; err != nil {
+		log.Printf("[BlogService.GetBlog][blogId=%s] error finding blog with id %s: %v", id, id, err)
+		if err == gorm.ErrRecordNotFound {
+			return m.Blog{}, fmt.Errorf("blog not found with id %s", id)
+		}
+		return m.Blog{}, fmt.Errorf("error fetching blog from database: %w", err)
+	}
+
+	return blog, nil
+}
+
+func (s *BlogService) GetTotalCount(userId uuid.UUID) (int64, error) {
+	var count int64
+
+	if err := s.db.Model(&m.Blog{}).
+		Where("user_id = ?", userId).
+		Count(&count).Error; err != nil {
+			log.Printf("[BlogService.GetTotalCount][userId=%s] error counting blogs for user %s: %v", userId, userId, err)
+			return 0, fmt.Errorf("failed to count blogs: %w", err)
+		}
+
+	return count, nil
+}
+
+func (s *BlogService) GetPostBySlug(slug string) (m.Blog, error) {
+	var blog m.Blog
+
+	if err := s.db.First(blog, "slug = ?", slug).Error; err != nil {
+		log.Printf("[BlogService.GetPostBySlug][slug=%s] error getting blog with slug %s: %v", slug, slug, err)
+
+		if err == gorm.ErrRecordNotFound {
+			return m.Blog{}, fmt.Errorf("blog not found with slug: %w", err)
+		}
+
+		return m.Blog{}, fmt.Errorf("failed to find blog by slug: %w", err)
+	}
+
+	return blog, nil
+}
+
+func (s *BlogService) GetBlogs(userId uuid.UUID, page, size int) ([]m.Blog, error) {
+	var blogs []m.Blog
+	offset := (page - 1) * size
+
+	result := s.db.
+		Where("user_id = ?", userId).
+		Order("created_at DESC").
+		Offset(offset).
+		Limit(size).
+		Find(&blogs)
+
+	if result.Error != nil {
+		log.Printf("[BlogService.GetBlogs][userId=%s, page=%d, size=%d] error getting blogs with id %s: %v", userId, page, size, userId, result.Error)
+		return nil, fmt.Errorf("error getting blogs with id %s: %v", userId, result.Error)
+	}
+
+	return blogs, nil
+}
+
+func (s *BlogService) GetPublishedBlogs(userId uuid.UUID, page, size int) ([]m.Blog, error) {
+	var blogs []m.Blog
+	offset := (page - 1) * size
+
+	result := s.db.
+		Where("user_id = ?, published = true", userId).
+		Order("created_at DESC").
+		Offset(offset).
+		Limit(size).
+		Find(&blogs)
+
+	if result.Error != nil {
+		log.Printf("[BlogService.GetPublishedBlogs][userId=%s, page=%d, size=%d] error getting published blogs with id %s: %v", userId, page, size, userId, result.Error)
+		return nil, fmt.Errorf("error getting blogs with id %s: %v", userId, result.Error)
+	}
+
+	return blogs, nil
+}
+
+func (s *BlogService) CreateBlog(dto m.BlogDto) (m.Blog, error) {
+
+}
+
+func (s *BlogService) UpdateBlog(dto m.BlogDto) (m.Blog, error) {
+
+}
+
+func (s *BlogService) TogglePublishStatus(id uuid.UUID) error {
+
+}
+
+func (s *BlogService) DeleteBlog(id uuid.UUID) error {
+
+}
