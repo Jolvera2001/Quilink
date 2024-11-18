@@ -101,17 +101,76 @@ func (s *BlogService) GetPublishedBlogs(userId uuid.UUID, page, size int) ([]m.B
 }
 
 func (s *BlogService) CreateBlog(dto m.BlogDto) (m.Blog, error) {
+	blog := m.Blog{
+		Title: dto.Title,
+		Content: dto.Content,
+		Slug: dto.Slug,
+		Published: dto.Published,
+		UserId: dto.UserId,
+	}
 
+	result := s.db.Create(&blog)
+
+	if result.Error != nil {
+		log.Printf("[BlogService.CreateBlog] error creating blog for user %s: %v", dto.UserId, result.Error)
+		return m.Blog{}, fmt.Errorf("failed to create blog %w", result.Error)
+	}
+
+	return blog, nil
 }
 
-func (s *BlogService) UpdateBlog(dto m.BlogDto) (m.Blog, error) {
+func (s *BlogService) UpdateBlog(blogId uuid.UUID, dto m.BlogDto) (m.Blog, error) {
+	var blog m.Blog
 
+	if err := s.db.First(&blog, "id = ?", blogId).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+            log.Printf("[BlogService.UpdateBlog] blog not found: id=%s", blogId)
+            return m.Blog{}, fmt.Errorf("blog not found: %s", blogId)
+        }
+        log.Printf("[BlogService.UpdateBlog] error fetching blog: id=%s error=%v", blogId, err)
+        return m.Blog{}, fmt.Errorf("failed to fetch blog: %w", err)
+	}
+
+	blog.Title = dto.Title
+	blog.Content = dto.Content
+	blog.Slug = dto.Slug
+	blog.Published = dto.Published
+
+	if err := s.db.Save(&blog).Error; err != nil {
+		log.Printf("[BlogService.UpdateBlog] error updating blog: id=%s error=%v", blogId, err)
+        return m.Blog{}, fmt.Errorf("failed to update blog: %w", err)
+	}
+
+	return blog, nil
 }
 
 func (s *BlogService) TogglePublishStatus(id uuid.UUID) error {
+	var blog m.Blog
 
+	if err := s.db.First(&blog, "id = ?", id).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+            log.Printf("[BlogService.TogglePublishedStatus] blog not found: id=%s", id)
+            return fmt.Errorf("blog not found: %s", id)
+        }
+        log.Printf("[BlogService.TogglePublishedStatus] error fetching blog: id=%s error=%v", id, err)
+        return fmt.Errorf("failed to fetch blog: %w", err)
+	}
+
+	blog.Published = !blog.Published
+
+	if err := s.db.Save(&blog).Error; err != nil {
+		log.Printf("[BlogService.TogglePublishedStatus] error toggling published status: id=%s error=%v", id, err)
+        return fmt.Errorf("failed to toggle published status: %w", err)
+	}
+
+	return nil
 }
 
 func (s *BlogService) DeleteBlog(id uuid.UUID) error {
+	if err := s.db.Delete(m.Blog{}, id).Error; err != nil {
+		log.Printf("[BlogService.DeleteBlog] error deleting blog: id=%s error=%v", id, err)
+        return fmt.Errorf("failed to delete blog: %w", err)
+	}
 
+	return nil
 }

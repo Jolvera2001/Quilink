@@ -13,7 +13,7 @@ type IBlogComponent interface {
 	GetBlogs(userId uuid.UUID, page, size int) ([]m.Blog, error)
 	GetPublishedBlogs(userId uuid.UUID, page, size int) ([]m.Blog, error)
 	CreateBlog(dto m.BlogDto) (m.Blog, error)
-	UpdateBlog(dto m.BlogDto) (m.Blog, error)
+	UpdateBlog(blogId uuid.UUID, dto m.BlogDto) (m.Blog, error)
 	TogglePublishStatus(id uuid.UUID) error
 	DeleteBlog(id uuid.UUID) error
 }
