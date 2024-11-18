@@ -21,7 +21,7 @@ erDiagram
     b[Blog]
     l[Links]
 
-    x||--|{p : "has one"
+    x||--|{p : "has"
     p||--o{b : "writes"
     p||--o{l : "has many"
 ```

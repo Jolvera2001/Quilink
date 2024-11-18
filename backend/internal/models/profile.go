@@ -12,4 +12,6 @@ type Profile struct {
 
 	// relationship
 	UserId uuid.UUID `gorm:"type:uuid;not null"`
+	Blogs  []Blog    `gorm:"foreignKey:ProfileId"`
+	Link   []Link    `gorm:"foreignKey:ProfileId"`
 }

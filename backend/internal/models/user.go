@@ -9,9 +9,8 @@ type User struct {
 	Email         string `gorm:"uniqueIndex;not null"`
 
 	// relationships
-	Profile Profile `gorm:"foreignKey:UserId"`
-	Blogs   []Blog  `gorm:"foreignKey:UserId"`
-	Link    []Link  `gorm:"foreignKey:UserId"`
+	Profile []Profile `gorm:"foreignKey:UserId"`
+	
 }
 
 type UserDto struct {
