@@ -42,17 +42,17 @@ func (s *UserService) Register(dto m.UserDto) (uuid.UUID, error) {
 	return user.ID, nil
 }
 
-func (s *UserService) Login(email, password string) (uuid.UUID, error) {
+func (s *UserService) Login(loginDto m.UserLoginDto) (uuid.UUID, error) {
 	var user m.User
 
-	if err := s.db.First(&user, "email = ?", email).Error; err != nil {
-		log.Printf("[UserService.Login] error finding user with email %s: %v", email, err)
+	if err := s.db.First(&user, "email = ?", loginDto.Email).Error; err != nil {
+		log.Printf("[UserService.Login] error finding user with email %s: %v", loginDto.Email, err)
 		return uuid.UUID{}, fmt.Errorf("failed to find user %w", err)
 	}
 
 	hash := user.Password_hash
 
-	if check := s.checkHash(password, hash); !check {
+	if check := s.checkHash(loginDto.Password, hash); !check {
 		log.Printf("[UserService.Login] password does not match")
 		return uuid.UUID{}, fmt.Errorf("failed to match password")
 	}
