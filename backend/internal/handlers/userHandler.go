@@ -7,7 +7,6 @@ import (
 	m "quilink/internal/models"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 type UserHandler struct {
@@ -68,7 +67,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 }
 
 func (h *UserHandler) DeleteAccount(c *gin.Context) {
-	var id uuid.UUID
+	var id m.IdRequest
 
 	if err := c.ShouldBindJSON(&id); err != nil {
 		log.Printf("[UserHandler.DeleteAccount] invalid data recieved: %v", err)

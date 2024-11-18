@@ -60,7 +60,7 @@ func (s *UserService) Login(loginDto m.UserLoginDto) (uuid.UUID, error) {
 	return user.ID, nil
 }
 
-func (s *UserService) DeleteAccount(id uuid.UUID) (bool, error) {
+func (s *UserService) DeleteAccount(id m.IdRequest) (bool, error) {
 	if err := s.db.Delete(&m.User{}, id).Error; err != nil {
 		log.Printf("[UserService.DeleteAccount] failed to delete user with id %s: %v", id, err)
 		return false, fmt.Errorf("failed to delete user %s: %v", id, err)

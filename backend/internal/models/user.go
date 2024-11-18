@@ -1,5 +1,7 @@
 package models
 
+import "github.com/google/uuid"
+
 type User struct {
 	Super
 	Username      string `gorm:"uniqueIndex;not null"`
@@ -21,4 +23,8 @@ type UserDto struct {
 type UserLoginDto struct {
 	Password string `json:"password"`
 	Email    string `json:"email"`
+}
+
+type IdRequest struct {
+	ID uuid.UUID `json:"id"`
 }
