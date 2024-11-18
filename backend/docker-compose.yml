@@ -5,14 +5,25 @@ services:
     environment:
       - PORT=${PORT}
       - GIN_MODE=${GIN_MODE}
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_PORT=${DB_PORT}
     ports:
       - "8080:8080"
     depends_on:
-      - db
+        db: 
+          condition: service_healthy
     networks:
       - quilink-network
   db:
     image: postgres:15-alpine
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     container_name: quilink_db
     ports:
       - "5432:5432"
