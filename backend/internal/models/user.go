@@ -11,3 +11,9 @@ type User struct {
 	Blogs   []Blog  `gorm:"foreignKey:UserId"`
 	Link    []Link  `gorm:"foreignKey:UserId"`
 }
+
+type UserDto struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Email    string `json:"email"`
+}
