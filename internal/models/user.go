@@ -2,9 +2,9 @@ package models
 
 type User struct {
 	Super
-	Username      string
+	Username      string `gorm:"uniqueIndex;not null"`
 	Password_hash string
-	Email         string
+	Email         string `gorm:"uniqueIndex;not null"`
 
 	// relationships
 	Profile Profile `gorm:"foreignKey:UserId"`

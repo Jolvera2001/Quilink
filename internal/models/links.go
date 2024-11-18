@@ -10,5 +10,5 @@ type Link struct {
 	Active bool
 
 	// relationship
-	UserId uuid.UUID
+	UserId uuid.UUID `gorm:"type:uuid;not null"`
 }

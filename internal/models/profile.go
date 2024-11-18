@@ -11,5 +11,5 @@ type Profile struct {
 	Custom_domain string
 
 	// relationship
-	UserId uuid.UUID
+	UserId uuid.UUID `gorm:"type:uuid;not null"`
 }
