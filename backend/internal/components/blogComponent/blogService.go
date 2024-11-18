@@ -106,13 +106,13 @@ func (s *BlogService) CreateBlog(dto m.BlogDto) (m.Blog, error) {
 		Content: dto.Content,
 		Slug: dto.Slug,
 		Published: dto.Published,
-		UserId: dto.UserId,
+		ProfileId: dto.ProfileId,
 	}
 
 	result := s.db.Create(&blog)
 
 	if result.Error != nil {
-		log.Printf("[BlogService.CreateBlog] error creating blog for user %s: %v", dto.UserId, result.Error)
+		log.Printf("[BlogService.CreateBlog] error creating blog for user %s: %v", dto.ProfileId, result.Error)
 		return m.Blog{}, fmt.Errorf("failed to create blog %w", result.Error)
 	}
 
