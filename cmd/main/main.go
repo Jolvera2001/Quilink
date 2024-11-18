@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"quilink/internal/handlers"
 	m "quilink/internal/models"
@@ -37,9 +38,16 @@ func main() {
 	// auto migrate
 	db.AutoMigrate(&m.User{}, &m.Blog{}, &m.Link{}, &m.Profile{})
 
+	// load html
+	r.LoadHTMLGlob("templates/**/*")
+
 	// handlers
 	blogHandler := handlers.NewBlogHandler()
 	handlers.GroupBlogHandlers(r, blogHandler)
+
+	r.GET("/", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "layout", nil)
+	})
 
 	r.Run()
 }
