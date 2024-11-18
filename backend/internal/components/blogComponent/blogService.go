@@ -167,7 +167,7 @@ func (s *BlogService) TogglePublishStatus(id uuid.UUID) error {
 }
 
 func (s *BlogService) DeleteBlog(id uuid.UUID) error {
-	if err := s.db.Delete(m.Blog{}, id).Error; err != nil {
+	if err := s.db.Delete(&m.Blog{}, id).Error; err != nil {
 		log.Printf("[BlogService.DeleteBlog] error deleting blog: id=%s error=%v", id, err)
         return fmt.Errorf("failed to delete blog: %w", err)
 	}

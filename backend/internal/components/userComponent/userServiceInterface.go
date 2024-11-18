@@ -9,5 +9,5 @@ import (
 type IUserService interface {
 	Register(dto m.UserDto) (uuid.UUID, error)
 	Login(email, password string) (uuid.UUID, error)
-	DeleteAccount(email, password string) (bool, error)
+	DeleteAccount(id uuid.UUID) (bool, error)
 }
