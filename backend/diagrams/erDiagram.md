@@ -12,7 +12,7 @@ erDiagram
     x||--||p : "has one"
 ```
 
-or 
+or
 
 ```mermaid
 erDiagram
