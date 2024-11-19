@@ -10,10 +10,10 @@ import (
 )
 
 type BlogService struct {
-	db gorm.DB
+	db *gorm.DB
 }
 
-func NewBlogService(db gorm.DB) *BlogService {
+func NewBlogService(db *gorm.DB) *BlogService {
 	return &BlogService{
 		db: db,
 	}
