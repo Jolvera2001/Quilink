@@ -12,4 +12,3 @@ Here are the list of planned features:
 - [ ] Blogs can be shared to other sites
 - [ ] public access to profiles
 - [ ] links using profile names to profiles
-
