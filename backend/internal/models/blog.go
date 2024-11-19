@@ -10,7 +10,7 @@ type Blog struct {
 	Published bool `gorm:"default:false"`
 
 	// relationship
-	UserId uuid.UUID `gorm:"type:uuid;not null"`
+	ProfileId uuid.UUID `gorm:"type:uuid;not null"`
 }
 
 type BlogDto struct {
@@ -18,5 +18,5 @@ type BlogDto struct {
 	Content   string    `json:"content"`
 	Slug      string    `json:"slug"`
 	Published bool      `json:"published"`
-	UserId    uuid.UUID `json:"user_id"`
+	ProfileId uuid.UUID `json:"profile_id"`
 }

@@ -10,5 +10,5 @@ type Link struct {
 	Active bool `gorm:"default:true"`
 
 	// relationship
-	UserId uuid.UUID `gorm:"type:uuid;not null"`
+	ProfileId uuid.UUID `gorm:"type:uuid;not null"`
 }

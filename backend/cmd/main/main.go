@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"quilink/internal/components/blogComponent"
 	"quilink/internal/components/userComponent"
 	"quilink/internal/handlers"
 	m "quilink/internal/models"
@@ -40,12 +41,15 @@ func main() {
 
 	// services
 	userService := userComponent.NewUserService(db)
+	blogService := blogComponent.NewBlogService(db)
 
 	// handlers
 	userHandler := handlers.NewUserHandler(userService)
+	blogHandler := handlers.NewBlogHandler(blogService)
 
 	// group
 	handlers.GroupUserHandlers(r, userHandler)
+	handlers.GroupBlogHandlers(r, blogHandler)
 
 	// driver
 	r.Run()
