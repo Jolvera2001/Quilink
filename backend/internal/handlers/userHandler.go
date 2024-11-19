@@ -33,18 +33,18 @@ func (h *UserHandler) Register(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&userDto); err != nil {
 		log.Printf("[UserHandler.Reigster] invalid data recieved: %v", err)
-		c.JSON(http.StatusBadRequest, gin.H{"Error": err})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 
 	userId, err := h.UserService.Register(userDto)
 	if err != nil {
 		log.Printf("[UserHandler.Reigster] error registering new user: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"Error": err})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"Account ID": userId})
+	c.JSON(http.StatusCreated, gin.H{"account_id": userId})
 }
 
 func (h *UserHandler) Login(c *gin.Context) {
@@ -52,18 +52,18 @@ func (h *UserHandler) Login(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&userLoginDto); err != nil {
 		log.Printf("[UserHandler.Login] invalid data recieved: %v", err)
-		c.JSON(http.StatusBadRequest, gin.H{"Error": err})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 
 	userId, err := h.UserService.Login(userLoginDto)
 	if err != nil {
 		log.Printf("[UserHandler.Login] error logging in user: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"Error": err})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Account ID": userId})
+	c.JSON(http.StatusOK, gin.H{"account_id": userId})
 }
 
 func (h *UserHandler) DeleteAccount(c *gin.Context) {
@@ -71,17 +71,17 @@ func (h *UserHandler) DeleteAccount(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&id); err != nil {
 		log.Printf("[UserHandler.DeleteAccount] invalid data recieved: %v", err)
-		c.JSON(http.StatusBadRequest, gin.H{"Error": err})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 
 	deleted, err := h.UserService.DeleteAccount(id)
 	if err != nil {
 		log.Printf("[UserHandler.DeleteAccount] error deleting user: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"Error": err})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Deleted": deleted})
+	c.JSON(http.StatusOK, gin.H{"deleted": deleted})
 
 }
