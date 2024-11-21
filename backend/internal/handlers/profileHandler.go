@@ -41,14 +41,14 @@ func (h *ProfileHandler) GetProfile(c *gin.Context) {
 		return
 	}
 
-	profile, links, err := h.service.GetProfile(id)
+	profile, err := h.service.GetProfile(id)
 	if err != nil {
 		log.Printf("[ProfileHandler.GetProfile] error getting profile: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"profile": profile, "links": links})
+	c.JSON(http.StatusOK, gin.H{"profile": profile})
 }
 
 func (h *ProfileHandler) GetProfiles(c *gin.Context) {
@@ -72,14 +72,14 @@ func (h *ProfileHandler) GetProfiles(c *gin.Context) {
 func (h *ProfileHandler) GetByDomain(c *gin.Context) {
 	domain := c.Param("domain")
 
-	profile, links, err := h.service.GetByDomain(domain)
+	profile, err := h.service.GetByDomain(domain)
 	if err != nil {
 		log.Printf("[ProfileHandler.GetByDomain] error getting profile: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"profile": profile, "links": links})
+	c.JSON(http.StatusOK, gin.H{"profile": profile})
 }
 
 func (h *ProfileHandler) CreateProfile(c *gin.Context) {
