@@ -12,12 +12,12 @@ import (
 )
 
 type BlogHandler struct {
-	Service *c.BlogService
+	service *c.BlogService
 }
 
 func NewBlogHandler(service *c.BlogService) *BlogHandler {
 	return &BlogHandler{
-		Service: service,
+		service: service,
 	}
 }
 
@@ -47,7 +47,7 @@ func (h *BlogHandler) GetBlog(c *gin.Context) {
 		return
 	}
 
-	blog, err := h.Service.GetBlog(blogId)
+	blog, err := h.service.GetBlog(blogId)
 	if err != nil {
 		log.Printf("[BlogHandler.GetBlog] error getting blog: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -66,7 +66,7 @@ func (h *BlogHandler) GetTotalCount(c *gin.Context) {
 		return
 	}
 
-	count, err := h.Service.GetTotalCount(profileId)
+	count, err := h.service.GetTotalCount(profileId)
 	if err != nil {
 		log.Printf("[BlogHandler.GetTotalCount] error getting total blog count: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -79,7 +79,7 @@ func (h *BlogHandler) GetTotalCount(c *gin.Context) {
 func (h *BlogHandler) GetPostBySlug(c *gin.Context) {
 	slug := c.Param("slug")
 
-	blog, err := h.Service.GetPostBySlug(slug)
+	blog, err := h.service.GetPostBySlug(slug)
 	if err != nil {
 		log.Printf("[BlogHandler.GetPostBySlug] error getting blog from slug: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -114,7 +114,7 @@ func (h *BlogHandler) GetBlogs(c *gin.Context) {
 		return
 	}
 
-	blogs, err := h.Service.GetBlogs(profileId, page, pageSize)
+	blogs, err := h.service.GetBlogs(profileId, page, pageSize)
 	if err != nil {
 		log.Printf("[BlogHandler.GetBlogs] error getting blogs: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -149,7 +149,7 @@ func (h *BlogHandler) GetPublishedBlogs(c *gin.Context) {
 		return
 	}
 
-	blogs, err := h.Service.GetPublishedBlogs(profileId, page, pageSize)
+	blogs, err := h.service.GetPublishedBlogs(profileId, page, pageSize)
 	if err != nil {
 		log.Printf("[BlogHandler.GetPublishedBlogs] error getting published blogs: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -168,7 +168,7 @@ func (h *BlogHandler) CreateBlog(c *gin.Context) {
 		return
 	}
 
-	createdBlog, err := h.Service.CreateBlog(blog)
+	createdBlog, err := h.service.CreateBlog(blog)
 	if err != nil {
 		log.Printf("[BlogHandler.CreateBlog] error creating blog: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -194,7 +194,7 @@ func (h *BlogHandler) UpdateBlog(c *gin.Context) {
 		return
 	}
 
-	blog, err := h.Service.UpdateBlog(id, blogUpdate)
+	blog, err := h.service.UpdateBlog(id, blogUpdate)
 	if err != nil {
 		log.Printf("[BlogHandler.UpdateBlog] error updating blog: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -213,7 +213,7 @@ func (h *BlogHandler) TogglePublishStatus(c *gin.Context) {
 		return
 	}
 
-	check, err := h.Service.TogglePublishStatus(id)
+	check, err := h.service.TogglePublishStatus(id)
 	if err != nil {
 		log.Printf("[BlogHandler.TogglePublishStatus] error toggling blog being published: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -232,7 +232,7 @@ func (h *BlogHandler) DeleteBlog(c *gin.Context) {
 		return
 	}
 
-	err = h.Service.DeleteBlog(id)
+	err = h.service.DeleteBlog(id)
 	if err != nil {
 		log.Printf("[BlogHandler.DeleteBlog] error deleting blog: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})

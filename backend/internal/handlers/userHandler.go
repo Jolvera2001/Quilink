@@ -10,12 +10,12 @@ import (
 )
 
 type UserHandler struct {
-	UserService c.IUserService
+	service c.IUserService
 }
 
 func NewUserHandler(service c.IUserService) *UserHandler {
 	return &UserHandler{
-		UserService: service,
+		service: service,
 	}
 }
 
@@ -37,7 +37,7 @@ func (h *UserHandler) Register(c *gin.Context) {
 		return
 	}
 
-	userId, err := h.UserService.Register(userDto)
+	userId, err := h.service.Register(userDto)
 	if err != nil {
 		log.Printf("[UserHandler.Reigster] error registering new user: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -56,7 +56,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 		return
 	}
 
-	userId, err := h.UserService.Login(userLoginDto)
+	userId, err := h.service.Login(userLoginDto)
 	if err != nil {
 		log.Printf("[UserHandler.Login] error logging in user: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -75,7 +75,7 @@ func (h *UserHandler) DeleteAccount(c *gin.Context) {
 		return
 	}
 
-	deleted, err := h.UserService.DeleteAccount(id)
+	deleted, err := h.service.DeleteAccount(id)
 	if err != nil {
 		log.Printf("[UserHandler.DeleteAccount] error deleting user: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
