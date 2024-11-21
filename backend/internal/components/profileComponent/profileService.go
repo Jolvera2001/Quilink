@@ -19,18 +19,29 @@ func NewProfileService(db *gorm.DB) *ProfileService {
 	}
 }
 
-func (s *ProfileService) GetProfile(id uuid.UUID) (m.Profile, error) {
+func (s *ProfileService) GetProfile(id uuid.UUID) (m.Profile, []m.Link, error) {
 	var profile m.Profile
+	var links []m.Link
 
 	if err := s.db.First(&profile, "id = ?", id).Error; err != nil {
 		log.Printf("[ProfileSerivce.GetProfile][profileId=%s] error finding profile with id %s: %v", id, id, err)
 		if err == gorm.ErrRecordNotFound {
-			return m.Profile{}, fmt.Errorf("profile not found with id %s", id)
+			return m.Profile{}, []m.Link{}, fmt.Errorf("profile not found with id %s", id)
 		}
-		return m.Profile{}, fmt.Errorf("error fetching profile from database: %w", err)
+		return m.Profile{}, []m.Link{}, fmt.Errorf("error fetching profile from database: %w", err)
 	}
 
-	return profile, nil
+	result := s.db.
+		Where("profile_id = ?", id).
+		Order("Created_at DESC").
+		Find(&links)
+
+	if result.Error != nil {
+		log.Printf("[ProfileSerivce.GetProfile][userId=%s] error finding profile with id %s: %v", id, id, result.Error)
+		return m.Profile{}, []m.Link{}, nil
+	}
+
+	return profile, links, nil
 }
 
 func (s *ProfileService) GetProfiles(userId uuid.UUID) ([]m.Profile, error) {
@@ -49,28 +60,39 @@ func (s *ProfileService) GetProfiles(userId uuid.UUID) ([]m.Profile, error) {
 	return profiles, nil
 }
 
-func (s *ProfileService) GetByDomain(customDomain string) (m.Profile, error) {
+func (s *ProfileService) GetByDomain(customDomain string) (m.Profile, []m.Link, error) {
 	var profile m.Profile
+	var links []m.Link
 
 	if err := s.db.First(&profile, "custom_domain = ?", customDomain).Error; err != nil {
 		log.Printf("[ProfileSerivce.GetByDomain][domain=%s] error finding profile with domain %s: %v", customDomain, customDomain, err)
 		if err == gorm.ErrRecordNotFound {
-			return m.Profile{}, fmt.Errorf("profile not found with domain %s", customDomain)
+			return m.Profile{}, []m.Link{}, fmt.Errorf("profile not found with domain %s", customDomain)
 		}
-		return m.Profile{}, fmt.Errorf("error fetching profile from database: %w", err)
+		return m.Profile{}, []m.Link{}, fmt.Errorf("error fetching profile from database: %w", err)
 	}
 
-	return profile, nil
+	result := s.db.
+		Where("profile_id = ?", profile.ID).
+		Order("Created_at DESC").
+		Find(&links)
+
+	if result.Error != nil {
+		log.Printf("[ProfileSerivce.GetByDomain] error finding profile with domain %s: %v", customDomain, result.Error)
+		return m.Profile{}, []m.Link{}, nil
+	}
+
+	return profile, links, nil
 }
 
 func (s *ProfileService) CreateProfile(dto m.ProfileDto) (m.Profile, error) {
 	profile := m.Profile{
-		Display_name: dto.Display_name,
-		Bio: dto.Bio,
-		Avatar_url: dto.Avatar_url,
-		Theme: dto.Theme,
+		Display_name:  dto.Display_name,
+		Bio:           dto.Bio,
+		Avatar_url:    dto.Avatar_url,
+		Theme:         dto.Theme,
 		Custom_domain: dto.Custom_domain,
-		UserId: dto.UserId,
+		UserId:        dto.UserId,
 	}
 
 	result := s.db.Create(&profile)
