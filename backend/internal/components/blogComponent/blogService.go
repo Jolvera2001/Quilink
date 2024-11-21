@@ -49,7 +49,7 @@ func (s *BlogService) GetTotalCount(profileId uuid.UUID) (int64, error) {
 func (s *BlogService) GetPostBySlug(slug string) (m.Blog, error) {
 	var blog m.Blog
 
-	if err := s.db.First(blog, "slug = ?", slug).Error; err != nil {
+	if err := s.db.First(&blog, "slug = ?", slug).Error; err != nil {
 		log.Printf("[BlogService.GetPostBySlug][slug=%s] error getting blog with slug %s: %v", slug, slug, err)
 
 		if err == gorm.ErrRecordNotFound {
@@ -86,7 +86,7 @@ func (s *BlogService) GetPublishedBlogs(profileId uuid.UUID, page, size int) ([]
 	offset := (page - 1) * size
 
 	result := s.db.
-		Where("user_id = ?, published = true", profileId).
+		Where("user_id = ? AND published = true", profileId).
 		Order("created_at DESC").
 		Offset(offset).
 		Limit(size).
@@ -122,7 +122,7 @@ func (s *BlogService) CreateBlog(dto m.BlogDto) (m.Blog, error) {
 func (s *BlogService) UpdateBlog(id uuid.UUID, dto m.BlogDto) (m.Blog, error) {
 	var blog m.Blog
 
-	if err := s.db.First(&blog, "id = ?", id.ID).Error; err != nil {
+	if err := s.db.First(&blog, "id = ?", id).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			log.Printf("[BlogService.UpdateBlog] blog not found: id=%s", id)
 			return m.Blog{}, fmt.Errorf("blog not found: %s", id)
