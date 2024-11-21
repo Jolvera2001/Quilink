@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"quilink/internal/components/blogComponent"
+	profilecomponent "quilink/internal/components/profileComponent"
 	"quilink/internal/components/userComponent"
 	"quilink/internal/handlers"
 	m "quilink/internal/models"
@@ -41,14 +42,17 @@ func main() {
 
 	// services
 	userService := userComponent.NewUserService(db)
+	profileService := profilecomponent.NewProfileService(db)
 	blogService := blogComponent.NewBlogService(db)
 
 	// handlers
 	userHandler := handlers.NewUserHandler(userService)
+	profileHandler := handlers.NewProfileHandler(profileService)
 	blogHandler := handlers.NewBlogHandler(blogService)
 
 	// group
 	handlers.GroupUserHandlers(r, userHandler)
+	handlers.GroupProfileHandlers(r, profileHandler)
 	handlers.GroupBlogHandlers(r, blogHandler)
 
 	// driver

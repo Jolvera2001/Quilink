@@ -20,7 +20,7 @@ func NewProfileHandler(service c.IProfileService) *ProfileHandler {
 	}
 }
 
-func GroupProfileHandlers(r *gin.Engine, h ProfileHandler) {
+func GroupProfileHandlers(r *gin.Engine, h *ProfileHandler) {
 	v1 := r.Group("api/v1")
 	{
 		v1.GET("profile/:id", h.GetProfile)
